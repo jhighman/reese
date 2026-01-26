@@ -454,6 +454,69 @@ body {
   }
 }
 
+/* Coursework Section */
+.coursework-section {
+  padding: 6rem 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.coursework-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-bottom: 3rem;
+}
+
+.coursework-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.coursework-item {
+  display: block;
+  background: var(--color-bg-light);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.coursework-item:hover {
+  transform: translateY(-4px);
+  background: rgba(112, 0, 46, 0.3);
+  border-color: var(--color-accent-light);
+}
+
+.coursework-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-accent-2);
+  margin-bottom: 0.5rem;
+}
+
+.coursework-title {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.coursework-desc {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
 /* About Section */
 .about-section {
   padding: 6rem 3rem;
