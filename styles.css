@@ -632,31 +632,150 @@ footer {
 }
 
 /* Responsive */
+/* Mobile Responsive */
 @media (max-width: 768px) {
+  /* Header */
+  .header-banner {
+    height: 40px;
+  }
+  
+  .banner-logo {
+    height: 24px;
+  }
+  
   .nav {
-    padding: 1rem 1.5rem;
+    top: 40px;
+    padding: 0.75rem 1rem;
   }
 
   .nav-links {
-    gap: 1.5rem;
+    gap: 1rem;
+    font-size: 0.85rem;
+  }
+  
+  /* Hero */
+  .hero {
+    padding: 1rem;
+    min-height: calc(100vh - 40px);
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .tagline {
+    font-size: 0.9rem;
+  }
+  
+  .intro {
+    font-size: 1rem;
   }
 
+  /* Sections */
   .work-section,
+  .skills-section,
+  .coursework-section,
   .about-section,
   .contact-section {
-    padding: 4rem 1.5rem;
+    padding: 3rem 1.25rem;
+  }
+  
+  .work-section h2,
+  .skills-section h2,
+  .coursework-section h2,
+  .about-section h2,
+  .contact-section h2 {
+    font-size: 1.75rem;
   }
 
-  .work-grid {
-    grid-template-columns: 1fr;
-  }
-
+  /* Filter tabs */
   .filter-tabs {
     gap: 0.5rem;
   }
 
   .filter-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
+  }
+  
+  /* Carousel */
+  .carousel-container {
+    gap: 0.5rem;
+  }
+  
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  
+  /* Coursework grid */
+  .coursework-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .coursework-item {
+    padding: 1.25rem;
+  }
+  
+  /* About */
+  .about-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .um-badge {
+    height: 30px;
+  }
+  
+  .about-text p {
+    font-size: 1rem;
+  }
+  
+  /* Contact */
+  .contact-link {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .social-links {
+    gap: 1.5rem;
+  }
+  
+  /* Footer */
+  .footer-logo {
+    height: 20px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .nav-links {
+    gap: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .filter-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .carousel-btn {
+    display: none;
+  }
+  
+  .tools-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  
+  .tool-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
   }
 }
