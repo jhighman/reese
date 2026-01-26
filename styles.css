@@ -475,18 +475,26 @@ body {
 
 .coursework-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
+@media (max-width: 900px) {
+  .coursework-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .coursework-item {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background: rgba(61, 0, 27, 0.8);
   border-radius: 0.75rem;
   padding: 1.5rem;
   text-decoration: none;
   transition: transform 0.2s, background 0.2s, border-color 0.2s;
   border: 2px solid rgba(237, 139, 0, 0.3);
+  min-height: 120px;
 }
 
 .coursework-item:hover {
@@ -711,7 +719,7 @@ footer {
   
   /* Coursework grid */
   .coursework-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: 1rem;
   }
   
