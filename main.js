@@ -181,22 +181,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function goToSlide(index) {
+    if (visibleSlides.length === 0) return;
     if (index < 0) index = visibleSlides.length - 1;
     if (index >= visibleSlides.length) index = 0;
     currentIndex = index;
     
-    // Calculate offset based on visible slides
-    const slideWidth = slides[0].offsetWidth;
-    let offset = 0;
-    for (let i = 0; i < currentIndex; i++) {
-      offset += visibleSlides[i].offsetWidth;
-    }
-    
-    // Find the actual index in all slides
-    const targetSlide = visibleSlides[currentIndex];
-    const actualIndex = Array.from(slides).indexOf(targetSlide);
-    track.style.transform = `translateX(-${actualIndex * 100}%)`;
-    
+    // Simple: just use currentIndex since hidden slides are display:none
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
     updateDots();
   }
   
@@ -220,16 +211,16 @@ document.addEventListener('DOMContentLoaded', function() {
       visibleSlides = [];
       slides.forEach(slide => {
         if (filter === 'all' || slide.dataset.category === filter) {
-          slide.classList.remove('hidden');
+          slide.style.display = '';
           visibleSlides.push(slide);
         } else {
-          slide.classList.add('hidden');
+          slide.style.display = 'none';
         }
       });
       
       // Reset to first slide and recreate dots
       currentIndex = 0;
-      goToSlide(0);
+      track.style.transform = 'translateX(0)';
       createDots();
     });
   });
