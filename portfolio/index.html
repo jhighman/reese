@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reese Highman — Artist & Creative Coder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="../portfolio-assets/um-logo.png">
+</head>
+<body>
+  <!-- Generative background canvas -->
+  <div id="bg-canvas"></div>
+  
+  <div class="header-banner">
+    <img src="../portfolio-assets/griz-logo.svg" alt="Griz" class="banner-logo">
+  </div>
+  <nav class="nav">
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-watermark"></div>
+    <div class="hero-content">
+      <h1>Reese Highman</h1>
+      <p class="tagline">Artist & Creative Coder</p>
+      <p class="intro">Exploring the space between analog and digital — through illustration, sculpture, and generative art.</p>
+    </div>
+  </header>
+
+  <main>
+    <section id="work" class="work-section">
+      <h2>Selected Work</h2>
+      
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="illustration">Illustration</button>
+        <button class="filter-btn" data-filter="sculpture">Sculpture</button>
+        <button class="filter-btn" data-filter="code">Creative Code</button>
+      </div>
+
+      <div class="carousel-container">
+        <button class="carousel-btn carousel-btn--prev" aria-label="Previous">‹</button>
+        
+        <div class="carousel">
+          <div class="carousel-track">
+            <!-- Illustration works -->
+            <article class="carousel-slide" data-category="illustration">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-01.jpg" alt="Digital Builders - Two figures with purple hair building with pink blocks">
+              </div>
+              <div class="slide-info">
+                <h3>Digital Builders</h3>
+                <span class="slide-medium">Illustration</span>
+                <p class="slide-description">Two figures construct meaning from digital fragments, exploring the intersection of virtual and physical creation.</p>
+              </div>
+            </article>
+
+            <article class="carousel-slide" data-category="illustration">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-03.jpg" alt="Summer Light - Portrait with blue-toned figure against sunset">
+              </div>
+              <div class="slide-info">
+                <h3>Summer Light</h3>
+                <span class="slide-medium">Illustration</span>
+                <p class="slide-description">A study in color and memory — cool tones meet warm light in a moment of quiet joy.</p>
+              </div>
+            </article>
+
+            <article class="carousel-slide" data-category="illustration">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-04.jpg" alt="Memory & Dream - Dual portrait exploring past and present">
+              </div>
+              <div class="slide-info">
+                <h3>Memory & Dream</h3>
+                <span class="slide-medium">Illustration</span>
+                <p class="slide-description">Past and present coexist — a reflection on childhood, imagination, and the landscapes we carry within.</p>
+              </div>
+            </article>
+
+            <!-- Sculpture works -->
+            <article class="carousel-slide" data-category="sculpture">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-05-3d.jpg" alt="Inner Child - Ceramic figure with crackle glaze containing pink bear">
+              </div>
+              <div class="slide-info">
+                <h3>Inner Child</h3>
+                <span class="slide-medium">Ceramic</span>
+                <p class="slide-description">A hollow figure holds what we protect most — the tender parts of ourselves we carry hidden.</p>
+              </div>
+            </article>
+
+            <article class="carousel-slide" data-category="sculpture">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-06-3d.jpg" alt="Assembled Self - Mixed media figure with fabric and found objects">
+              </div>
+              <div class="slide-info">
+                <h3>Assembled Self</h3>
+                <span class="slide-medium">Mixed Media</span>
+                <p class="slide-description">Identity as collage — we are made of what we collect, the textures and threads that bind us together.</p>
+              </div>
+            </article>
+
+            <article class="carousel-slide" data-category="sculpture">
+              <div class="slide-image">
+                <img src="../portfolio-assets/art-07-3d.jpg" alt="Moonlit Field - Ceramic platter with painted scene and rose handles">
+              </div>
+              <div class="slide-info">
+                <h3>Moonlit Field</h3>
+                <span class="slide-medium">Ceramic</span>
+                <p class="slide-description">Functional art that tells a story — where illustration meets sculpture in a moment of stillness.</p>
+              </div>
+            </article>
+
+            <!-- Creative Code works -->
+            <article class="carousel-slide" data-category="code">
+              <div class="slide-image slide-image--code">
+                <div class="code-preview" id="code-preview-1"></div>
+              </div>
+              <div class="slide-info">
+                <h3>Particle Flow</h3>
+                <span class="slide-medium">p5.js</span>
+                <p class="slide-description">Emergent patterns from simple rules — particles dance between gravity and randomness.</p>
+              </div>
+            </article>
+
+            <article class="carousel-slide" data-category="code">
+              <div class="slide-image slide-image--code">
+                <div class="code-preview" id="code-preview-2"></div>
+              </div>
+              <div class="slide-info">
+                <h3>Wave Forms</h3>
+                <span class="slide-medium">p5.js</span>
+                <p class="slide-description">Rhythm made visible — layered sine waves create an ever-shifting landscape of color and motion.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        
+        <button class="carousel-btn carousel-btn--next" aria-label="Next">›</button>
+      </div>
+      
+      <div class="carousel-dots"></div>
+    </section>
+
+    <section id="skills" class="skills-section">
+      <h2>Skills & Tools</h2>
+      
+      <div class="skills-container">
+        <div class="skills-column">
+          <h3>Design Skills</h3>
+          <div class="skill-item">
+            <span class="skill-name">Illustration</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Color Theory</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Composition</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Character Design</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Sculptural Form</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Creative Coding</span>
+            <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+          </div>
+        </div>
+        
+        <div class="skills-column">
+          <h3>Tools</h3>
+          <div class="tools-grid">
+            <div class="tool-item">
+              <span class="tool-icon">🎨</span>
+              <span class="tool-name">Procreate</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">📷</span>
+              <span class="tool-name">Photoshop</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">✏️</span>
+              <span class="tool-name">Illustrator</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">💻</span>
+              <span class="tool-name">p5.js</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">🖌️</span>
+              <span class="tool-name">Watercolor</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">🏺</span>
+              <span class="tool-name">Ceramics</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">✂️</span>
+              <span class="tool-name">Mixed Media</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-icon">📐</span>
+              <span class="tool-name">Figma</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about-section">
+      <div class="about-content">
+        <div class="about-header">
+          <h2>About</h2>
+          <img src="../portfolio-assets/um-wordmark.png" alt="University of Montana" class="um-badge">
+        </div>
+        <div class="about-text">
+          <p>I'm an artist and creative coder currently studying as an honors student at the University of Montana, where I made Dean's List last semester. Originally from Palm Harbor, Florida, I graduated Summa Cum Laude from East Lake High School.</p>
+          <p>My work explores the intersection of traditional art-making and digital creation. Whether I'm working with ceramics, illustration, or code, I'm drawn to themes of memory, identity, and the things we carry inside us.</p>
+          <p>I believe in the power of making — both physical and digital — to help us understand ourselves and connect with others. Currently exploring generative art through p5.js while continuing my practice in illustration and sculptural ceramics.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <h2>Get in Touch</h2>
+      <p>Interested in working together or just want to say hello?</p>
+      <a href="mailto:reesehighman@gmail.com" class="contact-link">reesehighman@gmail.com</a>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram">Instagram</a>
+        <a href="#" aria-label="GitHub">GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <img src="../portfolio-assets/um-logo.png" alt="UM" class="footer-logo">
+      <p>© 2026 Reese Highman</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

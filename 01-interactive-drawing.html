@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Drawing - p5.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+  <style>
+    body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1a2e; }
+    main { text-align: center; }
+    h2 { color: #eee; font-family: system-ui; margin-bottom: 10px; }
+    p { color: #888; font-family: system-ui; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>🎨 Interactive Drawing</h2>
+    <p>Click and drag to draw • Press any key to clear</p>
+    <div id="canvas-container"></div>
+  </main>
+  <script>
+    function setup() {
+      let canvas = createCanvas(600, 400);
+      canvas.parent('canvas-container');
+      background(30, 30, 50);
+    }
+
+    function draw() {
+      if (mouseIsPressed) {
+        // Rainbow colors based on position
+        let hue = map(mouseX + mouseY, 0, width + height, 0, 360);
+        colorMode(HSB);
+        stroke(hue, 80, 100);
+        strokeWeight(map(abs(mouseX - pmouseX) + abs(mouseY - pmouseY), 0, 50, 2, 20));
+        line(pmouseX, pmouseY, mouseX, mouseY);
+      }
+    }
+
+    function keyPressed() {
+      background(30, 30, 50);
+    }
+  </script>
+</body>
+</html>

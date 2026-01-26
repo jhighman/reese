@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Starfield - p5.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+  <style>
+    body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #000; }
+    main { text-align: center; }
+    h2 { color: #eee; font-family: system-ui; margin-bottom: 10px; }
+    p { color: #888; font-family: system-ui; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>⭐ Starfield</h2>
+    <p>Move mouse to control speed</p>
+    <div id="canvas-container"></div>
+  </main>
+  <script>
+    let stars = [];
+    const NUM_STARS = 400;
+
+    function setup() {
+      let canvas = createCanvas(600, 400);
+      canvas.parent('canvas-container');
+      
+      for (let i = 0; i < NUM_STARS; i++) {
+        stars.push(new Star());
+      }
+    }
+
+    function draw() {
+      background(0, 0, 0, 150);
+      translate(width/2, height/2);
+      
+      let speed = map(mouseX, 0, width, 0.5, 20);
+      
+      for (let star of stars) {
+        star.update(speed);
+        star.display();
+      }
+    }
+
+    class Star {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = random(-width/2, width/2);
+        this.y = random(-height/2, height/2);
+        this.z = random(width);
+        this.pz = this.z;
+      }
+
+      update(speed) {
+        this.z -= speed;
+        if (this.z < 1) {
+          this.reset();
+          this.z = width;
+          this.pz = this.z;
+        }
+      }
+
+      display() {
+        let sx = map(this.x / this.z, 0, 1, 0, width/2);
+        let sy = map(this.y / this.z, 0, 1, 0, height/2);
+        
+        let px = map(this.x / this.pz, 0, 1, 0, width/2);
+        let py = map(this.y / this.pz, 0, 1, 0, height/2);
+        
+        this.pz = this.z;
+        
+        let brightness = map(this.z, 0, width, 255, 50);
+        stroke(brightness);
+        strokeWeight(map(this.z, 0, width, 3, 0.5));
+        line(px, py, sx, sy);
+      }
+    }
+  </script>
+</body>
+</html>
