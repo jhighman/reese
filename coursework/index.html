@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative Coding Coursework — Reese Highman</title>
+  <style>
+    :root {
+      --bg: #2A0012;
+      --text: #EFE8D4;
+      --accent: #F9423A;
+      --muted: #DFD1A7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 3rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+    .back-link {
+      display: inline-block;
+      color: var(--accent);
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .project {
+      background: rgba(255,255,255,0.05);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .project:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.08);
+    }
+    .project a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .project p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-link">← Back to Portfolio</a>
+  <h1>Creative Coding Coursework</h1>
+  <p class="subtitle">p5.js explorations — University of Montana</p>
+  
+  <div class="projects">
+    <div class="project">
+      <a href="01-interactive-drawing.html">01 — Interactive Drawing</a>
+      <p>Mouse-driven drawing with color trails</p>
+    </div>
+    <div class="project">
+      <a href="02-bouncing-balls.html">02 — Bouncing Balls</a>
+      <p>Physics simulation with collision</p>
+    </div>
+    <div class="project">
+      <a href="03-particle-fountain.html">03 — Particle Fountain</a>
+      <p>Particle system with gravity</p>
+    </div>
+    <div class="project">
+      <a href="04-generative-circles.html">04 — Generative Circles</a>
+      <p>Procedural pattern generation</p>
+    </div>
+    <div class="project">
+      <a href="05-wave-pattern.html">05 — Wave Pattern</a>
+      <p>Trigonometric wave visualization</p>
+    </div>
+    <div class="project">
+      <a href="06-starfield.html">06 — Starfield</a>
+      <p>3D depth illusion with particles</p>
+    </div>
+  </div>
+</body>
+</html>
