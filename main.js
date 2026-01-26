@@ -73,7 +73,9 @@ let preview1Sketch = function(p) {
   p.setup = function() {
     let container = document.getElementById('code-preview-1');
     if (!container) return;
-    let canvas = p.createCanvas(container.offsetWidth, container.offsetHeight);
+    let w = container.offsetWidth || 400;
+    let h = container.offsetHeight || 300;
+    let canvas = p.createCanvas(w, h);
     canvas.parent('code-preview-1');
     
     for (let i = 0; i < 30; i++) {
@@ -115,7 +117,9 @@ let preview2Sketch = function(p) {
   p.setup = function() {
     let container = document.getElementById('code-preview-2');
     if (!container) return;
-    let canvas = p.createCanvas(container.offsetWidth, container.offsetHeight);
+    let w = container.offsetWidth || 400;
+    let h = container.offsetHeight || 300;
+    let canvas = p.createCanvas(w, h);
     canvas.parent('code-preview-2');
   };
   
