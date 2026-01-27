@@ -174,12 +174,12 @@ let murmurationSketch = function(p) {
   const NUM_BOIDS = 80;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-2');
+    let container = document.getElementById('code-preview-1');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-2');
+    canvas.parent('code-preview-1');
     
     for (let i = 0; i < NUM_BOIDS; i++) {
       boids.push({
@@ -398,12 +398,12 @@ let portraitSketch = function(p) {
   const NUM_PARTICLES = 200;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-4');
+    let container = document.getElementById('code-preview-2');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-4');
+    canvas.parent('code-preview-2');
     
     // Define face outline points
     let cx = w / 2;
@@ -489,12 +489,12 @@ let mountainSketch = function(p) {
   let timeOfDay = 0;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-5');
+    let container = document.getElementById('code-preview-3');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-5');
+    canvas.parent('code-preview-3');
   };
   
   p.draw = function() {
@@ -567,18 +567,12 @@ let mountainSketch = function(p) {
 // Initialize preview sketches when elements exist
 document.addEventListener('DOMContentLoaded', function() {
   if (document.getElementById('code-preview-1')) {
-    new p5(fireflySketch);
-  }
-  if (document.getElementById('code-preview-2')) {
     new p5(murmurationSketch);
   }
-  if (document.getElementById('code-preview-3')) {
-    new p5(inkSketch);
-  }
-  if (document.getElementById('code-preview-4')) {
+  if (document.getElementById('code-preview-2')) {
     new p5(portraitSketch);
   }
-  if (document.getElementById('code-preview-5')) {
+  if (document.getElementById('code-preview-3')) {
     new p5(mountainSketch);
   }
 });
