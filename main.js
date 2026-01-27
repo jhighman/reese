@@ -63,109 +63,6 @@ let bgSketch = function(p) {
 new p5(bgSketch);
 
 // ========================================
-// Firefly Field - ties to "Firefly Dance" artwork
-// Bioluminescent particles that pulse and gather toward cursor
-// ========================================
-let fireflySketch = function(p) {
-  let fireflies = [];
-  const NUM_FIREFLIES = 40;
-  
-  p.setup = function() {
-    let container = document.getElementById('code-preview-1');
-    if (!container) return;
-    let w = container.offsetWidth || 400;
-    let h = container.offsetHeight || 300;
-    let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-1');
-    
-    for (let i = 0; i < NUM_FIREFLIES; i++) {
-      fireflies.push({
-        x: p.random(p.width),
-        y: p.random(p.height),
-        vx: p.random(-0.5, 0.5),
-        vy: p.random(-0.5, 0.5),
-        phase: p.random(p.TWO_PI),
-        pulseSpeed: p.random(0.02, 0.05),
-        size: p.random(4, 8)
-      });
-    }
-  };
-  
-  p.draw = function() {
-    // Warm summer evening gradient
-    p.colorMode(p.RGB);
-    for (let y = 0; y < p.height; y++) {
-      let inter = p.map(y, 0, p.height, 0, 1);
-      let c = p.lerpColor(p.color(45, 25, 50), p.color(20, 15, 35), inter);
-      p.stroke(c);
-      p.line(0, y, p.width, y);
-    }
-    
-    p.colorMode(p.HSB);
-    p.noStroke();
-    
-    // Get mouse position relative to canvas
-    let mx = p.mouseX;
-    let my = p.mouseY;
-    let mouseInCanvas = mx > 0 && mx < p.width && my > 0 && my < p.height;
-    
-    for (let ff of fireflies) {
-      // Update phase for pulsing
-      ff.phase += ff.pulseSpeed;
-      
-      // Gentle drift
-      ff.vx += p.random(-0.1, 0.1);
-      ff.vy += p.random(-0.1, 0.1);
-      ff.vx = p.constrain(ff.vx, -1, 1);
-      ff.vy = p.constrain(ff.vy, -1, 1);
-      
-      // Attract toward mouse (jar effect)
-      if (mouseInCanvas) {
-        let dx = mx - ff.x;
-        let dy = my - ff.y;
-        let dist = p.sqrt(dx * dx + dy * dy);
-        if (dist < 100) {
-          ff.vx += dx * 0.002;
-          ff.vy += dy * 0.002;
-        }
-      }
-      
-      // Synchronize with nearby fireflies
-      for (let other of fireflies) {
-        if (other !== ff) {
-          let d = p.dist(ff.x, ff.y, other.x, other.y);
-          if (d < 50) {
-            ff.phase += (other.phase - ff.phase) * 0.01;
-          }
-        }
-      }
-      
-      ff.x += ff.vx;
-      ff.y += ff.vy;
-      
-      // Wrap edges
-      if (ff.x < 0) ff.x = p.width;
-      if (ff.x > p.width) ff.x = 0;
-      if (ff.y < 0) ff.y = p.height;
-      if (ff.y > p.height) ff.y = 0;
-      
-      // Pulsing glow
-      let brightness = p.map(p.sin(ff.phase), -1, 1, 0.2, 1);
-      let glowSize = ff.size * (1 + brightness * 0.5);
-      
-      // Outer glow
-      p.fill(45, 80, 100, brightness * 0.2);
-      p.ellipse(ff.x, ff.y, glowSize * 4);
-      p.fill(50, 90, 100, brightness * 0.4);
-      p.ellipse(ff.x, ff.y, glowSize * 2);
-      // Core
-      p.fill(55, 70, 100, brightness);
-      p.ellipse(ff.x, ff.y, glowSize);
-    }
-  };
-};
-
-// ========================================
 // Murmuration - Flocking birds (Montana wildlife)
 // Boids algorithm with emergent swarm behavior
 // ========================================
@@ -174,12 +71,12 @@ let murmurationSketch = function(p) {
   const NUM_BOIDS = 80;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-2');
+    let container = document.getElementById('code-preview-1');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-2');
+    canvas.parent('code-preview-1');
     
     for (let i = 0; i < NUM_BOIDS; i++) {
       boids.push({
@@ -227,21 +124,18 @@ let murmurationSketch = function(p) {
         if (other !== boid) {
           let d = p.dist(boid.x, boid.y, other.x, other.y);
           
-          // Separation
           if (d < 20) {
             sepX += boid.x - other.x;
             sepY += boid.y - other.y;
             sepCount++;
           }
           
-          // Alignment
           if (d < 50) {
             alignX += other.vx;
             alignY += other.vy;
             alignCount++;
           }
           
-          // Cohesion
           if (d < 60) {
             cohX += other.x;
             cohY += other.y;
@@ -250,7 +144,6 @@ let murmurationSketch = function(p) {
         }
       }
       
-      // Apply forces
       if (sepCount > 0) {
         boid.vx += sepX / sepCount * 0.05;
         boid.vy += sepY / sepCount * 0.05;
@@ -264,7 +157,6 @@ let murmurationSketch = function(p) {
         boid.vy += (cohY / cohCount - boid.y) * 0.003;
       }
       
-      // Avoid mouse (predator)
       if (mouseInCanvas) {
         let d = p.dist(boid.x, boid.y, mx, my);
         if (d < 80) {
@@ -273,7 +165,6 @@ let murmurationSketch = function(p) {
         }
       }
       
-      // Limit speed
       let speed = p.sqrt(boid.vx * boid.vx + boid.vy * boid.vy);
       if (speed > 3) {
         boid.vx = (boid.vx / speed) * 3;
@@ -283,14 +174,12 @@ let murmurationSketch = function(p) {
       boid.x += boid.vx;
       boid.y += boid.vy;
       
-      // Wrap edges
       if (boid.x < 0) boid.x = p.width;
       if (boid.x > p.width) boid.x = 0;
       if (boid.y < 0) boid.y = p.height;
       if (boid.y > p.height) boid.y = 0;
     }
     
-    // Draw boids as small birds
     p.colorMode(p.HSB);
     p.noStroke();
     for (let boid of boids) {
@@ -299,7 +188,6 @@ let murmurationSketch = function(p) {
       p.translate(boid.x, boid.y);
       p.rotate(angle);
       p.fill(0, 0, 15);
-      // Bird shape
       p.beginShape();
       p.vertex(6, 0);
       p.vertex(-4, -3);
@@ -312,84 +200,7 @@ let murmurationSketch = function(p) {
 };
 
 // ========================================
-// Ink Diffusion - Watercolor simulation
-// Click to drop ink that bleeds organically
-// ========================================
-let inkSketch = function(p) {
-  let particles = [];
-  let drops = [];
-  
-  p.setup = function() {
-    let container = document.getElementById('code-preview-3');
-    if (!container) return;
-    let w = container.offsetWidth || 400;
-    let h = container.offsetHeight || 300;
-    let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-3');
-    p.background(250, 245, 240); // Paper color
-  };
-  
-  p.draw = function() {
-    // Subtle paper texture fade
-    p.colorMode(p.RGB);
-    p.noStroke();
-    p.fill(250, 245, 240, 3);
-    p.rect(0, 0, p.width, p.height);
-    
-    // Update and draw ink particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-      let particle = particles[i];
-      
-      // Organic movement using noise
-      let angle = p.noise(particle.x * 0.01, particle.y * 0.01, p.frameCount * 0.01) * p.TWO_PI * 2;
-      particle.x += p.cos(angle) * particle.speed;
-      particle.y += p.sin(angle) * particle.speed;
-      particle.speed *= 0.99;
-      particle.life -= 0.5;
-      particle.size += 0.1;
-      
-      if (particle.life > 0) {
-        p.colorMode(p.HSB);
-        p.fill(particle.hue, particle.sat, particle.bri, particle.life / 255 * 0.5);
-        p.noStroke();
-        p.ellipse(particle.x, particle.y, particle.size);
-      } else {
-        particles.splice(i, 1);
-      }
-    }
-    
-    // Instructions
-    if (particles.length === 0 && drops.length === 0) {
-      p.colorMode(p.RGB);
-      p.fill(180);
-      p.textAlign(p.CENTER);
-      p.textSize(14);
-      p.text('click to drop ink', p.width/2, p.height/2);
-    }
-  };
-  
-  p.mousePressed = function() {
-    if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
-      // Create ink drop
-      let hue = p.random([340, 200, 280, 30]); // Her palette colors
-      for (let i = 0; i < 50; i++) {
-        particles.push({
-          x: p.mouseX + p.random(-5, 5),
-          y: p.mouseY + p.random(-5, 5),
-          size: p.random(2, 8),
-          speed: p.random(0.5, 2),
-          life: p.random(100, 255),
-          hue: hue + p.random(-20, 20),
-          sat: p.random(40, 70),
-          bri: p.random(50, 80)
-        });
-      }
-    }
-  };
-};
-
-// ========================================
-// Generative Self-Portrait
+// Self-Generated Portrait
 // Particles construct and deconstruct a face
 // ========================================
 let portraitSketch = function(p) {
@@ -398,14 +209,13 @@ let portraitSketch = function(p) {
   const NUM_PARTICLES = 200;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-4');
+    let container = document.getElementById('code-preview-2');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-4');
+    canvas.parent('code-preview-2');
     
-    // Define face outline points
     let cx = w / 2;
     let cy = h / 2;
     
@@ -433,7 +243,6 @@ let portraitSketch = function(p) {
       facePoints.push({ x: cx + p.cos(a + p.PI) * 20, y: cy + 35 + p.sin(a + p.PI) * 8 });
     }
     
-    // Initialize particles
     for (let i = 0; i < NUM_PARTICLES; i++) {
       let target = facePoints[p.floor(p.random(facePoints.length))];
       particles.push({
@@ -468,11 +277,9 @@ let portraitSketch = function(p) {
         }
       }
       
-      // Move toward target
       particle.x += (particle.targetX - particle.x) * 0.02;
       particle.y += (particle.targetY - particle.y) * 0.02;
       
-      // Draw
       let hue = particle.building ? 350 : 200;
       p.fill(hue, 60, 90, 0.8);
       p.ellipse(particle.x, particle.y, 3);
@@ -489,18 +296,17 @@ let mountainSketch = function(p) {
   let timeOfDay = 0;
   
   p.setup = function() {
-    let container = document.getElementById('code-preview-5');
+    let container = document.getElementById('code-preview-3');
     if (!container) return;
     let w = container.offsetWidth || 400;
     let h = container.offsetHeight || 300;
     let canvas = p.createCanvas(w, h);
-    canvas.parent('code-preview-5');
+    canvas.parent('code-preview-3');
   };
   
   p.draw = function() {
     timeOfDay += 0.002;
     
-    // Sky gradient based on time of day
     p.colorMode(p.RGB);
     let dayPhase = (p.sin(timeOfDay) + 1) / 2;
     
@@ -518,21 +324,17 @@ let mountainSketch = function(p) {
       p.line(0, y, p.width, y);
     }
     
-    // Sun/Moon
     let celestialY = p.height * 0.3 + p.sin(timeOfDay) * p.height * 0.2;
     if (dayPhase > 0.5) {
-      // Sun
       p.noStroke();
       p.fill(255, 220, 100, 200);
       p.ellipse(p.width * 0.75, celestialY, 30);
     } else {
-      // Moon
       p.noStroke();
       p.fill(230, 230, 240, 200);
       p.ellipse(p.width * 0.75, celestialY, 25);
     }
     
-    // Draw mountain layers (back to front)
     p.noStroke();
     for (let layer = 0; layer < 5; layer++) {
       let layerDepth = layer / 5;
@@ -567,18 +369,12 @@ let mountainSketch = function(p) {
 // Initialize preview sketches when elements exist
 document.addEventListener('DOMContentLoaded', function() {
   if (document.getElementById('code-preview-1')) {
-    new p5(fireflySketch);
-  }
-  if (document.getElementById('code-preview-2')) {
     new p5(murmurationSketch);
   }
-  if (document.getElementById('code-preview-3')) {
-    new p5(inkSketch);
-  }
-  if (document.getElementById('code-preview-4')) {
+  if (document.getElementById('code-preview-2')) {
     new p5(portraitSketch);
   }
-  if (document.getElementById('code-preview-5')) {
+  if (document.getElementById('code-preview-3')) {
     new p5(mountainSketch);
   }
 });
@@ -632,7 +428,6 @@ document.addEventListener('DOMContentLoaded', function() {
     goToSlide(currentIndex - 1);
   }
   
-  // Filter functionality
   function filterSlides(category) {
     currentIndex = 0;
     
@@ -654,7 +449,6 @@ document.addEventListener('DOMContentLoaded', function() {
     goToSlide(0);
   }
   
-  // Event listeners
   if (prevBtn) prevBtn.addEventListener('click', prevSlide);
   if (nextBtn) nextBtn.addEventListener('click', nextSlide);
   
@@ -666,7 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Touch support
   let touchStartX = 0;
   let touchEndX = 0;
   
@@ -682,16 +475,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Keyboard navigation
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key === 'ArrowRight') nextSlide();
   });
   
-  // Initialize
   createDots();
   
-  // Smooth scroll for nav links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       e.preventDefault();
