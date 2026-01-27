@@ -311,6 +311,259 @@ let murmurationSketch = function(p) {
   };
 };
 
+// ========================================
+// Ink Diffusion - Watercolor simulation
+// Click to drop ink that bleeds organically
+// ========================================
+let inkSketch = function(p) {
+  let particles = [];
+  let drops = [];
+  
+  p.setup = function() {
+    let container = document.getElementById('code-preview-3');
+    if (!container) return;
+    let w = container.offsetWidth || 400;
+    let h = container.offsetHeight || 300;
+    let canvas = p.createCanvas(w, h);
+    canvas.parent('code-preview-3');
+    p.background(250, 245, 240); // Paper color
+  };
+  
+  p.draw = function() {
+    // Subtle paper texture fade
+    p.colorMode(p.RGB);
+    p.noStroke();
+    p.fill(250, 245, 240, 3);
+    p.rect(0, 0, p.width, p.height);
+    
+    // Update and draw ink particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      let particle = particles[i];
+      
+      // Organic movement using noise
+      let angle = p.noise(particle.x * 0.01, particle.y * 0.01, p.frameCount * 0.01) * p.TWO_PI * 2;
+      particle.x += p.cos(angle) * particle.speed;
+      particle.y += p.sin(angle) * particle.speed;
+      particle.speed *= 0.99;
+      particle.life -= 0.5;
+      particle.size += 0.1;
+      
+      if (particle.life > 0) {
+        p.colorMode(p.HSB);
+        p.fill(particle.hue, particle.sat, particle.bri, particle.life / 255 * 0.5);
+        p.noStroke();
+        p.ellipse(particle.x, particle.y, particle.size);
+      } else {
+        particles.splice(i, 1);
+      }
+    }
+    
+    // Instructions
+    if (particles.length === 0 && drops.length === 0) {
+      p.colorMode(p.RGB);
+      p.fill(180);
+      p.textAlign(p.CENTER);
+      p.textSize(14);
+      p.text('click to drop ink', p.width/2, p.height/2);
+    }
+  };
+  
+  p.mousePressed = function() {
+    if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
+      // Create ink drop
+      let hue = p.random([340, 200, 280, 30]); // Her palette colors
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: p.mouseX + p.random(-5, 5),
+          y: p.mouseY + p.random(-5, 5),
+          size: p.random(2, 8),
+          speed: p.random(0.5, 2),
+          life: p.random(100, 255),
+          hue: hue + p.random(-20, 20),
+          sat: p.random(40, 70),
+          bri: p.random(50, 80)
+        });
+      }
+    }
+  };
+};
+
+// ========================================
+// Generative Self-Portrait
+// Particles construct and deconstruct a face
+// ========================================
+let portraitSketch = function(p) {
+  let particles = [];
+  let facePoints = [];
+  const NUM_PARTICLES = 200;
+  
+  p.setup = function() {
+    let container = document.getElementById('code-preview-4');
+    if (!container) return;
+    let w = container.offsetWidth || 400;
+    let h = container.offsetHeight || 300;
+    let canvas = p.createCanvas(w, h);
+    canvas.parent('code-preview-4');
+    
+    // Define face outline points
+    let cx = w / 2;
+    let cy = h / 2;
+    
+    // Face oval
+    for (let a = 0; a < p.TWO_PI; a += 0.1) {
+      facePoints.push({
+        x: cx + p.cos(a) * 60,
+        y: cy + p.sin(a) * 75
+      });
+    }
+    
+    // Eyes
+    for (let a = 0; a < p.TWO_PI; a += 0.3) {
+      facePoints.push({ x: cx - 25 + p.cos(a) * 12, y: cy - 15 + p.sin(a) * 8 });
+      facePoints.push({ x: cx + 25 + p.cos(a) * 12, y: cy - 15 + p.sin(a) * 8 });
+    }
+    
+    // Nose
+    facePoints.push({ x: cx, y: cy });
+    facePoints.push({ x: cx - 8, y: cy + 15 });
+    facePoints.push({ x: cx + 8, y: cy + 15 });
+    
+    // Mouth
+    for (let a = 0; a < p.PI; a += 0.2) {
+      facePoints.push({ x: cx + p.cos(a + p.PI) * 20, y: cy + 35 + p.sin(a + p.PI) * 8 });
+    }
+    
+    // Initialize particles
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+      let target = facePoints[p.floor(p.random(facePoints.length))];
+      particles.push({
+        x: p.random(p.width),
+        y: p.random(p.height),
+        targetX: target.x,
+        targetY: target.y,
+        building: true,
+        timer: p.random(100, 300)
+      });
+    }
+  };
+  
+  p.draw = function() {
+    p.background(20, 18, 30);
+    p.colorMode(p.HSB);
+    p.noStroke();
+    
+    for (let particle of particles) {
+      particle.timer--;
+      
+      if (particle.timer <= 0) {
+        particle.building = !particle.building;
+        particle.timer = p.random(100, 300);
+        if (particle.building) {
+          let target = facePoints[p.floor(p.random(facePoints.length))];
+          particle.targetX = target.x;
+          particle.targetY = target.y;
+        } else {
+          particle.targetX = p.random(p.width);
+          particle.targetY = p.random(p.height);
+        }
+      }
+      
+      // Move toward target
+      particle.x += (particle.targetX - particle.x) * 0.02;
+      particle.y += (particle.targetY - particle.y) * 0.02;
+      
+      // Draw
+      let hue = particle.building ? 350 : 200;
+      p.fill(hue, 60, 90, 0.8);
+      p.ellipse(particle.x, particle.y, 3);
+    }
+  };
+};
+
+// ========================================
+// Mountain Ridgeline Generator
+// Infinite Montana peaks with day/night cycle
+// ========================================
+let mountainSketch = function(p) {
+  let offset = 0;
+  let timeOfDay = 0;
+  
+  p.setup = function() {
+    let container = document.getElementById('code-preview-5');
+    if (!container) return;
+    let w = container.offsetWidth || 400;
+    let h = container.offsetHeight || 300;
+    let canvas = p.createCanvas(w, h);
+    canvas.parent('code-preview-5');
+  };
+  
+  p.draw = function() {
+    timeOfDay += 0.002;
+    
+    // Sky gradient based on time of day
+    p.colorMode(p.RGB);
+    let dayPhase = (p.sin(timeOfDay) + 1) / 2;
+    
+    for (let y = 0; y < p.height; y++) {
+      let inter = p.map(y, 0, p.height, 0, 1);
+      let dayTop = p.color(135, 180, 220);
+      let dayBottom = p.color(220, 180, 160);
+      let nightTop = p.color(15, 20, 40);
+      let nightBottom = p.color(40, 30, 50);
+      
+      let topColor = p.lerpColor(nightTop, dayTop, dayPhase);
+      let bottomColor = p.lerpColor(nightBottom, dayBottom, dayPhase);
+      let c = p.lerpColor(topColor, bottomColor, inter);
+      p.stroke(c);
+      p.line(0, y, p.width, y);
+    }
+    
+    // Sun/Moon
+    let celestialY = p.height * 0.3 + p.sin(timeOfDay) * p.height * 0.2;
+    if (dayPhase > 0.5) {
+      // Sun
+      p.noStroke();
+      p.fill(255, 220, 100, 200);
+      p.ellipse(p.width * 0.75, celestialY, 30);
+    } else {
+      // Moon
+      p.noStroke();
+      p.fill(230, 230, 240, 200);
+      p.ellipse(p.width * 0.75, celestialY, 25);
+    }
+    
+    // Draw mountain layers (back to front)
+    p.noStroke();
+    for (let layer = 0; layer < 5; layer++) {
+      let layerDepth = layer / 5;
+      let baseColor = p.lerpColor(
+        p.color(60, 50, 80),
+        p.color(30, 40, 50),
+        layerDepth
+      );
+      let brightness = p.map(dayPhase, 0, 1, 0.3, 1);
+      p.fill(p.red(baseColor) * brightness, p.green(baseColor) * brightness, p.blue(baseColor) * brightness);
+      
+      p.beginShape();
+      p.vertex(0, p.height);
+      
+      let noiseScale = 0.005 + layer * 0.003;
+      let heightScale = 80 + layer * 30;
+      let baseY = p.height - 50 - layer * 25;
+      
+      for (let x = 0; x <= p.width; x += 5) {
+        let y = baseY - p.noise(x * noiseScale + offset + layer * 100) * heightScale;
+        p.vertex(x, y);
+      }
+      
+      p.vertex(p.width, p.height);
+      p.endShape(p.CLOSE);
+    }
+    
+    offset += 0.002;
+  };
+};
+
 // Initialize preview sketches when elements exist
 document.addEventListener('DOMContentLoaded', function() {
   if (document.getElementById('code-preview-1')) {
@@ -318,6 +571,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   if (document.getElementById('code-preview-2')) {
     new p5(murmurationSketch);
+  }
+  if (document.getElementById('code-preview-3')) {
+    new p5(inkSketch);
+  }
+  if (document.getElementById('code-preview-4')) {
+    new p5(portraitSketch);
+  }
+  if (document.getElementById('code-preview-5')) {
+    new p5(mountainSketch);
   }
 });
 
