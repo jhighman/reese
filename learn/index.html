@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loops in JavaScript &amp; p5.js — Creative Coding Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+  <style>
+    :root {
+      --color-bg: #2A0012;
+      --color-bg-light: #3D001B;
+      --color-text: #EFE8D4;
+      --color-text-muted: #DFD1A7;
+      --color-accent: #70002e;
+      --color-accent-light: #F9423A;
+      --color-accent-2: #ED8B00;
+      --color-accent-3: #BBDDE6;
+      --color-green: #1D3C34;
+      --font-main: 'Space Grotesk', -apple-system, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.7;
+    }
+
+    /* Navigation */
+    .lesson-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      z-index: 100;
+      background: linear-gradient(to bottom, var(--color-bg) 60%, transparent 100%);
+    }
+
+    .lesson-nav a {
+      color: var(--color-accent-light);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .lesson-nav a:hover { color: var(--color-accent-2); }
+
+    .toc-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .toc-links a {
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+    }
+
+    .toc-links a:hover { color: var(--color-accent-light); }
+
+    /* Hero */
+    .lesson-hero {
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+    }
+
+    .lesson-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent-3) 50%, var(--color-accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lesson-hero .tagline {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--color-accent-2);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .lesson-hero .intro {
+      font-size: 1.15rem;
+      color: var(--color-text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    .lesson-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    .lesson-section h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-text);
+    }
+
+    .lesson-section h3 {
+      font-size: 1.35rem;
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-accent-2);
+    }
+
+    .lesson-section h4 {
+      font-size: 1.05rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+      color: var(--color-accent-3);
+      font-family: var(--font-mono);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--color-accent-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .lesson-section p {
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+      font-size: 1.05rem;
+    }
+
+    .lesson-section ul, .lesson-section ol {
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    .lesson-section li {
+      margin-bottom: 0.4rem;
+      font-size: 1.05rem;
+    }
+
+    .lesson-section strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    /* Divider between sections */
+    .section-divider {
+      max-width: 860px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid rgba(239, 232, 212, 0.08);
+    }
+
+    /* Code blocks */
+    .code-block {
+      background: #0f0a12;
+      border: 1px solid rgba(112, 0, 46, 0.3);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block code {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--color-text);
+      white-space: pre;
+      display: block;
+    }
+
+    .code-block .code-label {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--color-accent-light);
+      opacity: 0.5;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Syntax highlighting via spans */
+    .kw { color: #F9423A; }        /* keywords */
+    .fn { color: #BBDDE6; }        /* function names */
+    .str { color: #ED8B00; }       /* strings */
+    .num { color: #c9a0dc; }       /* numbers */
+    .cm { color: #6b5a5a; }        /* comments */
+    .op { color: #EFE8D4; }        /* operators */
+    .p5 { color: #81c784; }        /* p5.js built-ins */
+
+    /* Inline code */
+    code.inline {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      background: rgba(15, 10, 18, 0.6);
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.3rem;
+      color: var(--color-accent-3);
+    }
+
+    /* Live sketch containers */
+    .sketch-container {
+      background: #0f0a12;
+      border: 1px solid rgba(112, 0, 46, 0.3);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .sketch-container canvas {
+      display: block;
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    .sketch-label {
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-accent-2);
+      background: rgba(0,0,0,0.3);
+      letter-spacing: 0.05em;
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-left: 3px solid var(--color-accent-2);
+      background: rgba(237, 139, 0, 0.06);
+      padding: 1.25rem 1.5rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .callout p { margin-bottom: 0; color: var(--color-text-muted); }
+
+    .callout-title {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--color-accent-2);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+    }
+
+    .callout--blue {
+      border-left-color: var(--color-accent-3);
+      background: rgba(187, 221, 230, 0.05);
+    }
+
+    .callout--blue .callout-title { color: var(--color-accent-3); }
+
+    .callout--red {
+      border-left-color: var(--color-accent-light);
+      background: rgba(249, 66, 58, 0.05);
+    }
+
+    .callout--red .callout-title { color: var(--color-accent-light); }
+
+    /* Two-column layout for side-by-side */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Table of contents / outline card */
+    .outline-card {
+      background: var(--color-bg-light);
+      border: 1px solid rgba(237, 139, 0, 0.2);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .outline-card h3 {
+      font-size: 1.1rem;
+      color: var(--color-accent-2);
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .outline-card ol {
+      padding-left: 1.25rem;
+    }
+
+    .outline-card li {
+      margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .outline-card a {
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .outline-card a:hover { color: var(--color-accent-light); }
+
+    /* Footer */
+    .lesson-footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .lesson-footer a {
+      color: var(--color-accent-light);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .lesson-nav { padding: 0.75rem 1.25rem; }
+      .toc-links { display: none; }
+      .lesson-section { padding: 3rem 1.25rem; }
+      .lesson-hero { padding: 5rem 1.25rem 3rem; }
+      .two-col { grid-template-columns: 1fr; }
+      .lesson-section h2 { font-size: 1.6rem; }
+    }
+
+    @media (max-width: 480px) {
+      .lesson-hero h1 { font-size: 2rem; }
+      .code-block { padding: 1rem; }
+      .code-block code { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="lesson-nav">
+    <a href="/">&#8592; Portfolio</a>
+    <div class="toc-links">
+      <a href="#basics">Basics</a>
+      <a href="#variations">Variations</a>
+      <a href="#nesting">Nesting</a>
+      <a href="#control">Control</a>
+      <a href="#functions">Functions</a>
+      <a href="#scope">Scope</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="lesson-hero">
+    <div>
+      <h1>Loops &amp; Creative Code</h1>
+      <p class="tagline">JavaScript Loops in p5.js</p>
+      <p class="intro">How repetition becomes the engine of generative art. One instruction, a thousand possibilities.</p>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Outline -->
+    <section class="lesson-section">
+      <div class="outline-card">
+        <h3>Lesson Outline</h3>
+        <ol>
+          <li><a href="#basics">The <code class="inline">for</code> Loop &mdash; anatomy &amp; counting</a></li>
+          <li><a href="#variations">Loop Variations &mdash; <code class="inline">while</code>, <code class="inline">do...while</code>, <code class="inline">for...of</code></a></li>
+          <li><a href="#nesting">Nested Loops &mdash; grids, tiles, &amp; patterns</a></li>
+          <li><a href="#control">Control Flow &mdash; <code class="inline">break</code>, <code class="inline">continue</code>, &amp; <code class="inline">switch</code></a></li>
+          <li><a href="#functions">Loops + Functions &mdash; building things with reusable pieces</a></li>
+          <li><a href="#functional">Functional Patterns &mdash; <code class="inline">forEach</code>, <code class="inline">map</code>, <code class="inline">filter</code></a></li>
+          <li><a href="#scope">Variables &amp; Scope &mdash; where things live</a></li>
+          <li><a href="#challenge">Creative Challenge &mdash; putting it together</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 1. FOR LOOP BASICS ==================== -->
+    <section id="basics" class="lesson-section">
+      <span class="section-label">Part 1</span>
+      <h2>The <code class="inline">for</code> Loop</h2>
+
+      <p>A loop repeats a block of code. Instead of writing the same line 100 times, you write it once and tell the computer how many times to run it. This is the single most important concept in generative art &mdash; repetition with variation.</p>
+
+      <h3>Anatomy of a <code class="inline">for</code> loop</h3>
+
+      <div class="code-block">
+        <span class="code-label">syntax</span>
+        <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++) {
+  <span class="cm">// this code runs 10 times</span>
+  <span class="cm">// i goes: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9</span>
+}</code>
+      </div>
+
+      <p>Three parts, separated by semicolons:</p>
+      <ol>
+        <li><strong>Initialize</strong> &mdash; <code class="inline">let i = 0</code> &mdash; create a counter variable</li>
+        <li><strong>Condition</strong> &mdash; <code class="inline">i &lt; 10</code> &mdash; keep going while this is true</li>
+        <li><strong>Update</strong> &mdash; <code class="inline">i++</code> &mdash; change the counter after each pass</li>
+      </ol>
+
+      <div class="callout">
+        <div class="callout-title">Think of it this way</div>
+        <p>"Start at 0, keep going while less than 10, add 1 each time." That's it. The variable <code class="inline">i</code> is your iterator &mdash; it tracks where you are in the repetition.</p>
+      </div>
+
+      <h3>Drawing a row of circles</h3>
+
+      <p>Here's where it gets creative. Instead of just counting, we use <code class="inline">i</code> to control where and how we draw.</p>
+
+      <div class="code-block">
+        <span class="code-label">p5.js</span>
+        <code><span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="p5">background</span>(<span class="num">42</span>, <span class="num">0</span>, <span class="num">18</span>);
+  <span class="p5">noStroke</span>();
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++) {
+    <span class="kw">let</span> x = i * <span class="num">50</span> + <span class="num">50</span>;     <span class="cm">// spread across canvas</span>
+    <span class="kw">let</span> size = i * <span class="num">5</span> + <span class="num">10</span>;   <span class="cm">// each one bigger</span>
+    <span class="p5">fill</span>(<span class="num">249</span>, <span class="num">66</span>, <span class="num">58</span>, <span class="num">200</span>);
+    <span class="p5">circle</span>(x, <span class="num">200</span>, size);
+  }
+}</code>
+      </div>
+
+      <p>Each time through the loop, <code class="inline">i</code> is a different number, which means each circle lands at a different position with a different size. One instruction, ten results.</p>
+
+      <!-- Live sketch: row of circles -->
+      <div class="sketch-container">
+        <div id="sketch-row"></div>
+        <div class="sketch-label">Live: a row of circles where i controls position and size</div>
+      </div>
+
+      <h3>Counting by different amounts</h3>
+
+      <p>The update step doesn't have to be <code class="inline">i++</code>. You can count by any amount.</p>
+
+      <div class="two-col">
+        <div class="code-block">
+          <span class="code-label">count by 2</span>
+          <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">20</span>; i += <span class="num">2</span>) {
+  <span class="cm">// 0, 2, 4, 6, 8...</span>
+}</code>
+        </div>
+        <div class="code-block">
+          <span class="code-label">count backwards</span>
+          <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">10</span>; i &gt; <span class="num">0</span>; i--) {
+  <span class="cm">// 10, 9, 8, 7...</span>
+}</code>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <span class="code-label">use spacing directly</span>
+        <code><span class="cm">// Draw circles every 40 pixels across the canvas</span>
+<span class="kw">for</span> (<span class="kw">let</span> x = <span class="num">20</span>; x &lt; <span class="p5">width</span>; x += <span class="num">40</span>) {
+  <span class="p5">circle</span>(x, <span class="p5">height</span> / <span class="num">2</span>, <span class="num">30</span>);
+}</code>
+      </div>
+
+      <div class="callout callout--blue">
+        <div class="callout-title">Creative tip</div>
+        <p>You don't have to count integers. The iterator can step by pixel amounts, angles (try <code class="inline">i += 0.1</code> for smooth curves), or any value that makes visual sense.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 2. LOOP VARIATIONS ==================== -->
+    <section id="variations" class="lesson-section">
+      <span class="section-label">Part 2</span>
+      <h2>Loop Variations</h2>
+
+      <p>The <code class="inline">for</code> loop is the workhorse, but JavaScript gives you other loop types for different situations.</p>
+
+      <h3><code class="inline">while</code> loop</h3>
+
+      <p>A <code class="inline">while</code> loop keeps going as long as its condition is true. You manage the counter yourself.</p>
+
+      <div class="code-block">
+        <span class="code-label">while</span>
+        <code><span class="kw">let</span> x = <span class="num">0</span>;
+
+<span class="kw">while</span> (x &lt; <span class="p5">width</span>) {
+  <span class="p5">circle</span>(x, <span class="num">200</span>, <span class="num">20</span>);
+  x += <span class="fn">random</span>(<span class="num">20</span>, <span class="num">60</span>);  <span class="cm">// irregular spacing!</span>
+}</code>
+      </div>
+
+      <p><code class="inline">while</code> shines when you don't know how many iterations you need ahead of time &mdash; like when spacing is random, or you're searching for a condition.</p>
+
+      <div class="callout callout--red">
+        <div class="callout-title">Watch out</div>
+        <p>If the condition never becomes false, the loop runs forever and crashes your browser. Always make sure something inside the loop moves you toward the exit condition.</p>
+      </div>
+
+      <h3><code class="inline">do...while</code> loop</h3>
+
+      <p>Like <code class="inline">while</code>, but the body runs at least once before the condition is checked.</p>
+
+      <div class="code-block">
+        <span class="code-label">do...while</span>
+        <code><span class="kw">let</span> diameter;
+
+<span class="kw">do</span> {
+  diameter = <span class="fn">random</span>(<span class="num">10</span>, <span class="num">100</span>);
+  <span class="p5">circle</span>(<span class="fn">random</span>(<span class="p5">width</span>), <span class="fn">random</span>(<span class="p5">height</span>), diameter);
+} <span class="kw">while</span> (diameter &gt; <span class="num">25</span>);
+<span class="cm">// keeps drawing until it rolls a small circle</span></code>
+      </div>
+
+      <p>This is useful for "try at least once, then maybe keep going" situations &mdash; like generating random values until you get one that fits.</p>
+
+      <h3><code class="inline">for...of</code> loop</h3>
+
+      <p>When you have an array (a list of things), <code class="inline">for...of</code> walks through each item without needing an index.</p>
+
+      <div class="code-block">
+        <span class="code-label">for...of</span>
+        <code><span class="kw">let</span> colors = [<span class="str">'#F9423A'</span>, <span class="str">'#ED8B00'</span>, <span class="str">'#BBDDE6'</span>, <span class="str">'#70002e'</span>];
+
+<span class="kw">let</span> x = <span class="num">50</span>;
+<span class="kw">for</span> (<span class="kw">let</span> c <span class="kw">of</span> colors) {
+  <span class="p5">fill</span>(c);
+  <span class="p5">square</span>(x, <span class="num">100</span>, <span class="num">60</span>);
+  x += <span class="num">80</span>;
+}
+<span class="cm">// draws 4 squares, each a different color</span></code>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">When to use which?</div>
+        <p><strong><code class="inline">for</code></strong> &mdash; you know how many times (or need the index number). <strong><code class="inline">while</code></strong> &mdash; you don't know how many times. <strong><code class="inline">for...of</code></strong> &mdash; you're walking through an array and don't need the index. Most creative coding uses <code class="inline">for</code> loops, but knowing the others makes you flexible.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 3. NESTED LOOPS ==================== -->
+    <section id="nesting" class="lesson-section">
+      <span class="section-label">Part 3</span>
+      <h2>Nested Loops</h2>
+
+      <p>A loop inside a loop. The outer loop handles rows, the inner loop handles columns (or vice versa). This is how you build grids, tiles, and two-dimensional patterns &mdash; the bread and butter of generative art.</p>
+
+      <h3>The grid pattern</h3>
+
+      <div class="code-block">
+        <span class="code-label">p5.js</span>
+        <code><span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="p5">background</span>(<span class="num">42</span>, <span class="num">0</span>, <span class="num">18</span>);
+  <span class="p5">noStroke</span>();
+
+  <span class="kw">let</span> spacing = <span class="num">40</span>;
+
+  <span class="kw">for</span> (<span class="kw">let</span> row = <span class="num">0</span>; row &lt; <span class="num">10</span>; row++) {        <span class="cm">// outer: rows</span>
+    <span class="kw">for</span> (<span class="kw">let</span> col = <span class="num">0</span>; col &lt; <span class="num">10</span>; col++) {     <span class="cm">// inner: columns</span>
+      <span class="kw">let</span> x = col * spacing + <span class="num">20</span>;
+      <span class="kw">let</span> y = row * spacing + <span class="num">20</span>;
+      <span class="p5">fill</span>(<span class="num">249</span>, <span class="num">66</span>, <span class="num">58</span>);
+      <span class="p5">circle</span>(x, y, <span class="num">15</span>);
+    }
+  }
+}</code>
+      </div>
+
+      <p>For each single step of the outer loop, the inner loop runs its full cycle. 10 rows &times; 10 columns = 100 circles, from just a few lines of code.</p>
+
+      <!-- Live sketch: grid -->
+      <div class="sketch-container">
+        <div id="sketch-grid"></div>
+        <div class="sketch-label">Live: nested loops creating a grid where distance to mouse controls size</div>
+      </div>
+
+      <h3>Making it creative</h3>
+
+      <p>The real power shows when you combine the row/column values with math, randomness, or interaction.</p>
+
+      <div class="code-block">
+        <span class="code-label">variation with math</span>
+        <code><span class="kw">for</span> (<span class="kw">let</span> row = <span class="num">0</span>; row &lt; <span class="num">10</span>; row++) {
+  <span class="kw">for</span> (<span class="kw">let</span> col = <span class="num">0</span>; col &lt; <span class="num">10</span>; col++) {
+    <span class="kw">let</span> x = col * <span class="num">40</span> + <span class="num">20</span>;
+    <span class="kw">let</span> y = row * <span class="num">40</span> + <span class="num">20</span>;
+    <span class="kw">let</span> d = <span class="p5">dist</span>(x, y, <span class="p5">mouseX</span>, <span class="p5">mouseY</span>);
+    <span class="kw">let</span> size = <span class="p5">map</span>(d, <span class="num">0</span>, <span class="num">300</span>, <span class="num">30</span>, <span class="num">5</span>);
+    <span class="p5">circle</span>(x, y, size);
+  }
+}</code>
+      </div>
+
+      <p>Now each dot responds to the mouse. The closer it is, the bigger it gets. Same nested loop &mdash; completely different visual result.</p>
+
+      <h3>More nesting ideas</h3>
+      <ul>
+        <li>Use <code class="inline">row + col</code> to create diagonal color gradients</li>
+        <li>Use <code class="inline">sin(row * 0.5) * cos(col * 0.5)</code> for organic wave patterns</li>
+        <li>Alternate shapes: <code class="inline">if ((row + col) % 2 === 0)</code> to make a checkerboard</li>
+        <li>Use <code class="inline">noise(row * 0.1, col * 0.1)</code> for Perlin noise terrain</li>
+      </ul>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 4. CONTROL FLOW ==================== -->
+    <section id="control" class="lesson-section">
+      <span class="section-label">Part 4</span>
+      <h2>Control Flow Inside Loops</h2>
+
+      <p>Sometimes you need to skip iterations or bail out early. JavaScript gives you <code class="inline">break</code> and <code class="inline">continue</code> for this, and <code class="inline">switch</code> for making decisions.</p>
+
+      <h3><code class="inline">break</code> &mdash; stop the loop entirely</h3>
+
+      <div class="code-block">
+        <span class="code-label">break</span>
+        <code><span class="cm">// Draw circles left to right, but stop if one overlaps the mouse</span>
+<span class="kw">for</span> (<span class="kw">let</span> x = <span class="num">20</span>; x &lt; <span class="p5">width</span>; x += <span class="num">30</span>) {
+  <span class="kw">if</span> (<span class="p5">dist</span>(x, <span class="num">200</span>, <span class="p5">mouseX</span>, <span class="p5">mouseY</span>) &lt; <span class="num">20</span>) {
+    <span class="kw">break</span>;  <span class="cm">// exit the loop right here</span>
+  }
+  <span class="p5">circle</span>(x, <span class="num">200</span>, <span class="num">20</span>);
+}</code>
+      </div>
+
+      <h3><code class="inline">continue</code> &mdash; skip this one, keep going</h3>
+
+      <div class="code-block">
+        <span class="code-label">continue</span>
+        <code><span class="cm">// Draw a row, but skip every third circle</span>
+<span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">15</span>; i++) {
+  <span class="kw">if</span> (i % <span class="num">3</span> === <span class="num">0</span>) {
+    <span class="kw">continue</span>;  <span class="cm">// skip to the next iteration</span>
+  }
+  <span class="p5">circle</span>(i * <span class="num">30</span> + <span class="num">20</span>, <span class="num">200</span>, <span class="num">20</span>);
+}</code>
+      </div>
+
+      <p><code class="inline">break</code> ends the loop. <code class="inline">continue</code> skips the current pass and moves on. Both are especially useful in search patterns or when you want to create visual gaps.</p>
+
+      <h3><code class="inline">switch</code> inside a loop</h3>
+
+      <p>A <code class="inline">switch</code> statement is a cleaner way to handle multiple conditions. It compares one value against several cases.</p>
+
+      <div class="code-block">
+        <span class="code-label">switch in a loop</span>
+        <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">12</span>; i++) {
+  <span class="kw">let</span> x = i * <span class="num">40</span> + <span class="num">30</span>;
+
+  <span class="kw">switch</span> (i % <span class="num">4</span>) {
+    <span class="kw">case</span> <span class="num">0</span>:
+      <span class="p5">fill</span>(<span class="str">'#F9423A'</span>);  <span class="cm">// red</span>
+      <span class="p5">circle</span>(x, <span class="num">200</span>, <span class="num">30</span>);
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">1</span>:
+      <span class="p5">fill</span>(<span class="str">'#ED8B00'</span>);  <span class="cm">// gold</span>
+      <span class="p5">square</span>(x - <span class="num">15</span>, <span class="num">185</span>, <span class="num">30</span>);
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>:
+      <span class="p5">fill</span>(<span class="str">'#BBDDE6'</span>);  <span class="cm">// blue</span>
+      <span class="p5">triangle</span>(x, <span class="num">185</span>, x - <span class="num">15</span>, <span class="num">215</span>, x + <span class="num">15</span>, <span class="num">215</span>);
+      <span class="kw">break</span>;
+    <span class="kw">default</span>:
+      <span class="p5">fill</span>(<span class="str">'#70002e'</span>);  <span class="cm">// maroon</span>
+      <span class="p5">ellipse</span>(x, <span class="num">200</span>, <span class="num">30</span>, <span class="num">20</span>);
+  }
+}</code>
+      </div>
+
+      <!-- Live sketch: switch shapes -->
+      <div class="sketch-container">
+        <div id="sketch-switch"></div>
+        <div class="sketch-label">Live: switch statement cycling through shapes and colors</div>
+      </div>
+
+      <div class="callout callout--blue">
+        <div class="callout-title">About the break in switch</div>
+        <p>The <code class="inline">break</code> inside a <code class="inline">switch</code> is different from the loop <code class="inline">break</code>. Here it prevents "fall-through" to the next case. Without it, execution keeps running into the next case's code. The last case (<code class="inline">default</code>) doesn't need one since there's nothing to fall into.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 5. LOOPS + FUNCTIONS ==================== -->
+    <section id="functions" class="lesson-section">
+      <span class="section-label">Part 5</span>
+      <h2>Loops + Functions</h2>
+
+      <p>Loops become truly powerful when you combine them with functions. A function packages up a drawing recipe; a loop calls that recipe over and over with different ingredients.</p>
+
+      <h3>Build a shape, repeat it</h3>
+
+      <div class="code-block">
+        <span class="code-label">p5.js</span>
+        <code><span class="kw">function</span> <span class="fn">drawFlower</span>(x, y, petals, size) {
+  <span class="p5">push</span>();
+  <span class="p5">translate</span>(x, y);
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; petals; i++) {
+    <span class="kw">let</span> angle = (<span class="p5">TWO_PI</span> / petals) * i;
+    <span class="kw">let</span> px = <span class="p5">cos</span>(angle) * size;
+    <span class="kw">let</span> py = <span class="p5">sin</span>(angle) * size;
+    <span class="p5">ellipse</span>(px, py, size * <span class="num">0.8</span>, size * <span class="num">0.4</span>);
+  }
+  <span class="p5">circle</span>(<span class="num">0</span>, <span class="num">0</span>, size * <span class="num">0.5</span>);
+
+  <span class="p5">pop</span>();
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="p5">background</span>(<span class="num">42</span>, <span class="num">0</span>, <span class="num">18</span>);
+  <span class="p5">noStroke</span>();
+  <span class="p5">fill</span>(<span class="num">249</span>, <span class="num">66</span>, <span class="num">58</span>, <span class="num">180</span>);
+
+  <span class="cm">// Loop calls the function with different arguments</span>
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+    <span class="fn">drawFlower</span>(i * <span class="num">100</span> + <span class="num">80</span>, <span class="num">200</span>, i + <span class="num">4</span>, <span class="num">25</span>);
+  }
+}</code>
+      </div>
+
+      <p>The function <code class="inline">drawFlower</code> uses a loop internally (to draw petals) and is called by another loop externally (to place flowers). Loops inside functions inside loops &mdash; this composability is how complex generative art works.</p>
+
+      <!-- Live sketch: flowers -->
+      <div class="sketch-container">
+        <div id="sketch-flowers"></div>
+        <div class="sketch-label">Live: a function draws flowers; a loop places them; petal count increases</div>
+      </div>
+
+      <h3>Functions that return values</h3>
+
+      <p>Functions don't just draw &mdash; they can compute values your loop uses.</p>
+
+      <div class="code-block">
+        <span class="code-label">computing with functions</span>
+        <code><span class="kw">function</span> <span class="fn">wave</span>(x, time) {
+  <span class="kw">return</span> <span class="p5">sin</span>(x * <span class="num">0.05</span> + time) * <span class="num">50</span>;
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="p5">background</span>(<span class="num">42</span>, <span class="num">0</span>, <span class="num">18</span>);
+  <span class="p5">noFill</span>();
+  <span class="p5">stroke</span>(<span class="num">187</span>, <span class="num">221</span>, <span class="num">230</span>);
+
+  <span class="kw">for</span> (<span class="kw">let</span> x = <span class="num">0</span>; x &lt; <span class="p5">width</span>; x += <span class="num">5</span>) {
+    <span class="kw">let</span> y = <span class="num">200</span> + <span class="fn">wave</span>(x, <span class="p5">frameCount</span> * <span class="num">0.03</span>);
+    <span class="p5">circle</span>(x, y, <span class="num">4</span>);
+  }
+}</code>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">Key idea</div>
+        <p>Functions let you <strong>name</strong> a behavior. <code class="inline">wave(x, time)</code> is easier to read and reuse than the raw math. When your loop calls <code class="inline">wave()</code> 100 times, you get a whole animation from one clean formula. This separation &mdash; "what to do" (function) vs. "how many times" (loop) &mdash; is fundamental to writing readable, flexible code.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 6. FUNCTIONAL PATTERNS ==================== -->
+    <section id="functional" class="lesson-section">
+      <span class="section-label">Part 6</span>
+      <h2>Functional Patterns</h2>
+
+      <p>JavaScript arrays have built-in methods that loop for you. These come from a style called <strong>functional programming</strong> &mdash; instead of writing the loop yourself, you describe <em>what</em> to do with each element and the method handles the iteration.</p>
+
+      <h3><code class="inline">forEach</code> &mdash; do something to each item</h3>
+
+      <div class="code-block">
+        <span class="code-label">forEach</span>
+        <code><span class="kw">let</span> particles = [
+  { x: <span class="num">100</span>, y: <span class="num">50</span> },
+  { x: <span class="num">200</span>, y: <span class="num">120</span> },
+  { x: <span class="num">300</span>, y: <span class="num">80</span> }
+];
+
+particles.<span class="fn">forEach</span>(<span class="kw">function</span>(p) {
+  <span class="p5">circle</span>(p.x, p.y, <span class="num">20</span>);
+});</code>
+      </div>
+
+      <p>Same result as a <code class="inline">for</code> loop, but the intent is clearer: "for each particle, draw it."</p>
+
+      <h3><code class="inline">map</code> &mdash; transform each item into something new</h3>
+
+      <div class="code-block">
+        <span class="code-label">map</span>
+        <code><span class="kw">let</span> radii = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>];
+
+<span class="cm">// Double every radius</span>
+<span class="kw">let</span> doubled = radii.<span class="fn">map</span>(<span class="kw">function</span>(r) {
+  <span class="kw">return</span> r * <span class="num">2</span>;
+});
+<span class="cm">// doubled is [20, 40, 60, 80, 100]</span></code>
+      </div>
+
+      <p><code class="inline">map</code> returns a <strong>new array</strong>. The original stays unchanged. This is a core principle of functional programming: don't modify existing data, create new data from it.</p>
+
+      <h3><code class="inline">filter</code> &mdash; keep only what matches</h3>
+
+      <div class="code-block">
+        <span class="code-label">filter</span>
+        <code><span class="kw">let</span> sizes = [<span class="num">5</span>, <span class="num">18</span>, <span class="num">42</span>, <span class="num">3</span>, <span class="num">25</span>, <span class="num">60</span>];
+
+<span class="cm">// Keep only sizes bigger than 15</span>
+<span class="kw">let</span> big = sizes.<span class="fn">filter</span>(<span class="kw">function</span>(s) {
+  <span class="kw">return</span> s &gt; <span class="num">15</span>;
+});
+<span class="cm">// big is [18, 42, 25, 60]</span></code>
+      </div>
+
+      <h3>Arrow function shorthand</h3>
+
+      <p>You'll often see these methods written with <strong>arrow functions</strong> &mdash; a shorter syntax.</p>
+
+      <div class="two-col">
+        <div class="code-block">
+          <span class="code-label">verbose</span>
+          <code>sizes.<span class="fn">filter</span>(<span class="kw">function</span>(s) {
+  <span class="kw">return</span> s &gt; <span class="num">15</span>;
+});</code>
+        </div>
+        <div class="code-block">
+          <span class="code-label">arrow function</span>
+          <code>sizes.<span class="fn">filter</span>(s =&gt; s &gt; <span class="num">15</span>);</code>
+        </div>
+      </div>
+
+      <p>Same thing. The arrow (<code class="inline">=&gt;</code>) replaces <code class="inline">function</code> and <code class="inline">return</code> for one-line operations.</p>
+
+      <h3>Chaining them together</h3>
+
+      <div class="code-block">
+        <span class="code-label">chain: filter, then map, then forEach</span>
+        <code><span class="kw">let</span> data = [<span class="num">3</span>, <span class="num">12</span>, <span class="num">7</span>, <span class="num">25</span>, <span class="num">18</span>, <span class="num">2</span>];
+
+data
+  .<span class="fn">filter</span>(n =&gt; n &gt; <span class="num">10</span>)           <span class="cm">// keep [12, 25, 18]</span>
+  .<span class="fn">map</span>(n =&gt; n * <span class="num">3</span>)              <span class="cm">// scale to [36, 75, 54]</span>
+  .<span class="fn">forEach</span>((size, i) =&gt; {
+    <span class="p5">circle</span>(i * <span class="num">80</span> + <span class="num">50</span>, <span class="num">200</span>, size);
+  });</code>
+      </div>
+
+      <div class="callout callout--blue">
+        <div class="callout-title">Loops vs. functional methods</div>
+        <p>Both work. <code class="inline">for</code> loops give you maximum control (you can <code class="inline">break</code>, manipulate the counter, etc.). Functional methods (<code class="inline">forEach</code>, <code class="inline">map</code>, <code class="inline">filter</code>) express intent more clearly and are less error-prone. Use whatever fits the situation &mdash; most creative coders mix both styles freely.</p>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 7. VARIABLES & SCOPE ==================== -->
+    <section id="scope" class="lesson-section">
+      <span class="section-label">Part 7</span>
+      <h2>Variables &amp; Scope</h2>
+
+      <p>Where you <em>declare</em> a variable determines where you can <em>use</em> it. This concept is called <strong>scope</strong>. Understanding it prevents mysterious bugs, especially inside loops.</p>
+
+      <h3>Block scope with <code class="inline">let</code> and <code class="inline">const</code></h3>
+
+      <p>Any variable declared with <code class="inline">let</code> or <code class="inline">const</code> inside curly braces <code class="inline">{}</code> only exists inside those braces.</p>
+
+      <div class="code-block">
+        <span class="code-label">scope</span>
+        <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+  <span class="kw">let</span> size = i * <span class="num">10</span>;   <span class="cm">// exists ONLY inside this loop</span>
+  <span class="p5">circle</span>(<span class="num">50</span>, <span class="num">50</span>, size);
+}
+
+<span class="cm">// console.log(size);  &lt;-- ERROR: size is not defined</span>
+<span class="cm">// console.log(i);     &lt;-- ERROR: i is not defined</span></code>
+      </div>
+
+      <p>Both <code class="inline">i</code> and <code class="inline">size</code> are gone once the loop ends. Each pass through the loop gets a fresh copy of <code class="inline">i</code>.</p>
+
+      <h3>Global vs. local</h3>
+
+      <div class="code-block">
+        <span class="code-label">scope levels</span>
+        <code><span class="kw">let</span> total = <span class="num">0</span>;  <span class="cm">// global to this file</span>
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="kw">let</span> bg = <span class="num">20</span>;   <span class="cm">// local to draw()</span>
+  <span class="p5">background</span>(bg);
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++) {
+    <span class="kw">let</span> x = i * <span class="num">40</span>;  <span class="cm">// local to the loop</span>
+    total += <span class="num">1</span>;     <span class="cm">// modifying the global -- works</span>
+    <span class="p5">circle</span>(x, <span class="num">200</span>, <span class="num">10</span>);
+  }
+  <span class="cm">// x is not accessible here</span>
+}
+<span class="cm">// bg is not accessible here</span></code>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">Scope in p5.js</div>
+        <p>Variables that need to persist across frames (positions, velocities, arrays of objects) must be declared <strong>outside</strong> <code class="inline">setup()</code> and <code class="inline">draw()</code>. Variables only needed for temporary drawing calculations should be declared <strong>inside</strong> the loop or function where they're used. This keeps your code clean and avoids accidental state.</p>
+      </div>
+
+      <h3><code class="inline">let</code> vs. <code class="inline">const</code> in loops</h3>
+
+      <div class="two-col">
+        <div class="code-block">
+          <span class="code-label">let &mdash; can change</span>
+          <code><span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+  <span class="cm">// i changes each pass</span>
+}</code>
+        </div>
+        <div class="code-block">
+          <span class="code-label">const &mdash; fixed per pass</span>
+          <code><span class="kw">for</span> (<span class="kw">const</span> color <span class="kw">of</span> colors) {
+  <span class="cm">// color is new each pass</span>
+  <span class="cm">// but can't reassign it</span>
+}</code>
+        </div>
+      </div>
+
+      <p>Use <code class="inline">const</code> in <code class="inline">for...of</code> loops when you won't reassign the variable. Use <code class="inline">let</code> in standard <code class="inline">for</code> loops because the counter needs to change.</p>
+
+      <h3>The old <code class="inline">var</code> trap</h3>
+
+      <p>The older keyword <code class="inline">var</code> doesn't respect block scope &mdash; it "leaks" out of loops and if-blocks. This causes subtle bugs. Always use <code class="inline">let</code> or <code class="inline">const</code> instead.</p>
+
+      <div class="code-block">
+        <span class="code-label">var leaks scope</span>
+        <code><span class="kw">for</span> (<span class="kw">var</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+  <span class="cm">// ...</span>
+}
+console.<span class="fn">log</span>(i);  <span class="cm">// 5 -- still accessible! var leaks.</span>
+
+<span class="kw">for</span> (<span class="kw">let</span> j = <span class="num">0</span>; j &lt; <span class="num">5</span>; j++) {
+  <span class="cm">// ...</span>
+}
+<span class="cm">// console.log(j);  &lt;-- ERROR with let. Much safer.</span></code>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 8. CREATIVE CHALLENGE ==================== -->
+    <section id="challenge" class="lesson-section">
+      <span class="section-label">Challenge</span>
+      <h2>Putting It All Together</h2>
+
+      <p>Here's a sketch that combines nested loops, functions, control flow, and scope &mdash; everything from this lesson in one piece.</p>
+
+      <div class="code-block">
+        <span class="code-label">p5.js &mdash; generative mosaic</span>
+        <code><span class="kw">let</span> palette = [<span class="str">'#F9423A'</span>, <span class="str">'#ED8B00'</span>, <span class="str">'#BBDDE6'</span>, <span class="str">'#70002e'</span>];
+
+<span class="kw">function</span> <span class="fn">setup</span>() {
+  <span class="p5">createCanvas</span>(<span class="num">500</span>, <span class="num">400</span>);
+  <span class="p5">noLoop</span>();  <span class="cm">// draw once</span>
+}
+
+<span class="kw">function</span> <span class="fn">drawTile</span>(x, y, size, type) {
+  <span class="p5">push</span>();
+  <span class="p5">translate</span>(x + size / <span class="num">2</span>, y + size / <span class="num">2</span>);
+
+  <span class="kw">switch</span> (type) {
+    <span class="kw">case</span> <span class="num">0</span>:
+      <span class="p5">circle</span>(<span class="num">0</span>, <span class="num">0</span>, size * <span class="num">0.8</span>);
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">1</span>:
+      <span class="p5">rectMode</span>(<span class="p5">CENTER</span>);
+      <span class="p5">square</span>(<span class="num">0</span>, <span class="num">0</span>, size * <span class="num">0.7</span>);
+      <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>:
+      <span class="kw">for</span> (<span class="kw">let</span> a = <span class="num">0</span>; a &lt; <span class="p5">TWO_PI</span>; a += <span class="p5">PI</span> / <span class="num">3</span>) {
+        <span class="kw">let</span> px = <span class="p5">cos</span>(a) * size * <span class="num">0.3</span>;
+        <span class="kw">let</span> py = <span class="p5">sin</span>(a) * size * <span class="num">0.3</span>;
+        <span class="p5">circle</span>(px, py, size * <span class="num">0.2</span>);
+      }
+      <span class="kw">break</span>;
+    <span class="kw">default</span>:
+      <span class="p5">line</span>(-size/<span class="num">2</span>, -size/<span class="num">2</span>, size/<span class="num">2</span>, size/<span class="num">2</span>);
+      <span class="p5">line</span>(-size/<span class="num">2</span>, size/<span class="num">2</span>, size/<span class="num">2</span>, -size/<span class="num">2</span>);
+  }
+
+  <span class="p5">pop</span>();
+}
+
+<span class="kw">function</span> <span class="fn">draw</span>() {
+  <span class="p5">background</span>(<span class="num">42</span>, <span class="num">0</span>, <span class="num">18</span>);
+  <span class="p5">noStroke</span>();
+
+  <span class="kw">const</span> tileSize = <span class="num">50</span>;
+
+  <span class="kw">for</span> (<span class="kw">let</span> row = <span class="num">0</span>; row &lt; <span class="p5">height</span> / tileSize; row++) {
+    <span class="kw">for</span> (<span class="kw">let</span> col = <span class="num">0</span>; col &lt; <span class="p5">width</span> / tileSize; col++) {
+
+      <span class="cm">// Skip corners for visual interest</span>
+      <span class="kw">if</span> (row === <span class="num">0</span> &amp;&amp; col === <span class="num">0</span>) <span class="kw">continue</span>;
+      <span class="kw">if</span> (row === <span class="num">0</span> &amp;&amp; col === <span class="num">9</span>) <span class="kw">continue</span>;
+
+      <span class="kw">let</span> colorIndex = (row + col) % palette.length;
+      <span class="p5">fill</span>(palette[colorIndex]);
+
+      <span class="kw">let</span> type = <span class="p5">floor</span>(<span class="p5">random</span>(<span class="num">4</span>));
+      <span class="fn">drawTile</span>(col * tileSize, row * tileSize, tileSize, type);
+    }
+  }
+}
+
+<span class="kw">function</span> <span class="fn">mousePressed</span>() {
+  <span class="p5">redraw</span>();  <span class="cm">// click to regenerate</span>
+}</code>
+      </div>
+
+      <!-- Live sketch: mosaic -->
+      <div class="sketch-container">
+        <div id="sketch-mosaic"></div>
+        <div class="sketch-label">Live: click to regenerate &mdash; nested loops, switch, functions, scope all working together</div>
+      </div>
+
+      <h3>Try these modifications</h3>
+      <ol>
+        <li>Change <code class="inline">tileSize</code> to make the grid finer or coarser</li>
+        <li>Add a new shape case to the <code class="inline">switch</code></li>
+        <li>Use <code class="inline">noise(row * 0.3, col * 0.3)</code> instead of <code class="inline">random()</code> for smoother patterns</li>
+        <li>Make the color depend on distance from center using <code class="inline">dist()</code></li>
+        <li>Use <code class="inline">map()</code> on the palette array to shift all the colors</li>
+      </ol>
+
+      <div class="callout callout--blue">
+        <div class="callout-title">Recap</div>
+        <p>Every generative sketch is loops + variation. <strong><code class="inline">for</code></strong> handles counted repetition. <strong>Nested loops</strong> create grids. <strong><code class="inline">break</code>/<code class="inline">continue</code></strong> add exceptions. <strong>Functions</strong> package reusable behaviors. <strong>Functional methods</strong> (<code class="inline">map</code>, <code class="inline">filter</code>, <code class="inline">forEach</code>) express transformations cleanly. And <strong>scope</strong> keeps everything organized. Mix these tools freely &mdash; that's what creative coding is.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lesson-footer">
+    <p><a href="/">&#8592; Back to Portfolio</a> &nbsp;&middot;&nbsp; <a href="/coursework/">Coursework</a></p>
+  </footer>
+
+  <!-- ==================== LIVE SKETCHES ==================== -->
+  <script>
+    // Sketch 1: Row of circles
+    new p5(function(p) {
+      p.setup = function() {
+        let c = p.createCanvas(500, 120);
+        c.parent('sketch-row');
+      };
+      p.draw = function() {
+        p.background(42, 0, 18);
+        p.noStroke();
+        for (let i = 0; i < 10; i++) {
+          let x = i * 48 + 30;
+          let size = i * 5 + 8;
+          let alpha = p.map(i, 0, 9, 100, 255);
+          p.fill(249, 66, 58, alpha);
+          p.circle(x, 60, size);
+        }
+      };
+    });
+
+    // Sketch 2: Interactive grid (nested loops)
+    new p5(function(p) {
+      p.setup = function() {
+        let c = p.createCanvas(500, 320);
+        c.parent('sketch-grid');
+      };
+      p.draw = function() {
+        p.background(42, 0, 18);
+        p.noStroke();
+        let spacing = 35;
+        let cols = Math.floor(p.width / spacing);
+        let rows = Math.floor(p.height / spacing);
+        let offsetX = (p.width - (cols - 1) * spacing) / 2;
+        let offsetY = (p.height - (rows - 1) * spacing) / 2;
+
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
+            let x = col * spacing + offsetX;
+            let y = row * spacing + offsetY;
+            let d = p.dist(x, y, p.mouseX, p.mouseY);
+            let size = p.map(d, 0, 250, 28, 4, true);
+            let hue = p.map(d, 0, 300, 0, 40);
+            p.fill(249 - hue, 66 + hue, 58 + hue * 2, 220);
+            p.circle(x, y, size);
+          }
+        }
+      };
+    });
+
+    // Sketch 3: Switch shapes
+    new p5(function(p) {
+      p.setup = function() {
+        let c = p.createCanvas(500, 120);
+        c.parent('sketch-switch');
+      };
+      p.draw = function() {
+        p.background(42, 0, 18);
+        p.noStroke();
+        let colors = ['#F9423A', '#ED8B00', '#BBDDE6', '#70002e'];
+        for (let i = 0; i < 12; i++) {
+          let x = i * 40 + 30;
+          p.fill(colors[i % 4]);
+          switch (i % 4) {
+            case 0:
+              p.circle(x, 60, 28);
+              break;
+            case 1:
+              p.square(x - 14, 46, 28);
+              break;
+            case 2:
+              p.triangle(x, 46, x - 14, 74, x + 14, 74);
+              break;
+            default:
+              p.ellipse(x, 60, 28, 18);
+          }
+        }
+      };
+    });
+
+    // Sketch 4: Flowers
+    new p5(function(p) {
+      p.setup = function() {
+        let c = p.createCanvas(500, 200);
+        c.parent('sketch-flowers');
+      };
+
+      function drawFlower(x, y, petals, size) {
+        p.push();
+        p.translate(x, y);
+        for (let i = 0; i < petals; i++) {
+          let angle = (p.TWO_PI / petals) * i;
+          let px = p.cos(angle) * size;
+          let py = p.sin(angle) * size;
+          p.ellipse(px, py, size * 0.8, size * 0.4);
+        }
+        p.fill(237, 139, 0);
+        p.circle(0, 0, size * 0.5);
+        p.pop();
+      }
+
+      p.draw = function() {
+        p.background(42, 0, 18);
+        p.noStroke();
+        p.fill(249, 66, 58, 180);
+
+        for (let i = 0; i < 5; i++) {
+          let hover = p.dist(p.mouseX, p.mouseY, i * 100 + 50, 100) < 50;
+          let sz = hover ? 30 : 22;
+          drawFlower(i * 100 + 50, 100, i + 4, sz);
+        }
+      };
+    });
+
+    // Sketch 5: Mosaic
+    new p5(function(p) {
+      let palette = ['#F9423A', '#ED8B00', '#BBDDE6', '#70002e'];
+      let seed;
+
+      p.setup = function() {
+        let c = p.createCanvas(500, 320);
+        c.parent('sketch-mosaic');
+        p.noLoop();
+        seed = p.random(10000);
+      };
+
+      function drawTile(x, y, size, type) {
+        p.push();
+        p.translate(x + size / 2, y + size / 2);
+        switch (type) {
+          case 0:
+            p.circle(0, 0, size * 0.8);
+            break;
+          case 1:
+            p.rectMode(p.CENTER);
+            p.square(0, 0, size * 0.7);
+            break;
+          case 2:
+            for (let a = 0; a < p.TWO_PI; a += p.PI / 3) {
+              let px = p.cos(a) * size * 0.3;
+              let py = p.sin(a) * size * 0.3;
+              p.circle(px, py, size * 0.2);
+            }
+            break;
+          default:
+            p.strokeWeight(2);
+            p.stroke(palette[0]);
+            p.line(-size / 3, -size / 3, size / 3, size / 3);
+            p.line(-size / 3, size / 3, size / 3, -size / 3);
+            p.noStroke();
+        }
+        p.pop();
+      }
+
+      p.draw = function() {
+        p.randomSeed(seed);
+        p.background(42, 0, 18);
+        p.noStroke();
+        let tileSize = 40;
+
+        for (let row = 0; row < p.height / tileSize; row++) {
+          for (let col = 0; col < p.width / tileSize; col++) {
+            let colorIndex = (row + col) % palette.length;
+            p.fill(palette[colorIndex]);
+            let type = p.floor(p.random(4));
+            drawTile(col * tileSize, row * tileSize, tileSize, type);
+          }
+        }
+      };
+
+      p.mousePressed = function() {
+        seed = p.random(10000);
+        p.redraw();
+      };
+    });
+  </script>
+
+</body>
+</html>
